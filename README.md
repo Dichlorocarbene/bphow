@@ -1,2 +1,4 @@
 # bphow
-did not finish
+This is a simple project.
+
+To be continued.
