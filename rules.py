@@ -8,6 +8,11 @@ import osu_part as o
 
 def commands(message, uid, gid=None):
     if gid is not None:
+        # help file
+        if re.match("^(!|！)hlp$", message):
+            m.send_group_message(group_id=gid, content=c.help_file)
+
+        # roll a point
         if re.match("^(!|！)roll ?-?\d*$", message):
             num = message[5:].strip()
             if num == "":
@@ -15,12 +20,31 @@ def commands(message, uid, gid=None):
             else:
                 m.send_group_message(group_id=gid, content=roll(int(num)))
 
+        # base information inquiry
         if re.match("^(!|！)pi ?[\w\-\[\]]*$", message):
             osu_id = message[3:].strip()
             if osu_id == "":
                 m.send_group_message(group_id=gid, content=o.get_user_personinfo(c.qq_dict[uid]))
             else:
                 m.send_group_message(group_id=gid, content=o.get_user_personinfo(osu_id))
+
+        # recent play inquiry
+        if re.match("^(!|！)pe ?[\w\-\[\]]*$", message):
+            osu_id = message[3:].strip()
+            if osu_id == "":
+                m.send_group_message(group_id=gid, content=o.get_user_recent(c.qq_dict[uid]))
+            elif re.match("^[\d]+$", osu_id):
+                m.send_group_message(group_id=gid, content=o.get_user_recent(c.qq_dict[uid], int(osu_id)))
+            else:
+                m.send_group_message(group_id=gid, content=o.get_user_recent(osu_id))
+
+        # curve
+        if re.match("^(!|！)curve ?[\w\-\[\]]*", message):
+            osu_id = message[6:].strip()
+            if osu_id == "":
+                m.send_group_message(group_id=gid, content=o.curve(c.qq_dict[uid]))
+            else:
+                m.send_group_message(group_id=gid, content=o.curve(osu_id))
 
     else:
         if re.match("^(!|！)roll ?-?\d*$", message):
@@ -44,4 +68,7 @@ def roll(maxnum: int = 100) -> str:
     else:
         res = rd.randint(1, maxnum)
         return str(res)
+
+
+
 
